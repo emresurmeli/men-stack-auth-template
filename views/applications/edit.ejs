@@ -3,10 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
     <title>Editing <%= application.title %></title>
   </head>
   <body>
     <%- include('../partials/_navbar.ejs') %>
+    <div class="edit-body">
     <h1>Edit <%= application.title %> at <%= application.company %></h1>
     <form action="/users/<%= user._id %>/applications/<%= application._id %>?_method=PUT" method="POST">
       <label for="company">Company:</label>
@@ -37,5 +39,6 @@
       <br />
       <button type="submit">Save Changes</button>
     </form>
+  </div>
   </body>
 </html>
