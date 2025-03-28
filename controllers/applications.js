@@ -1,4 +1,4 @@
-import express from "express";
+import express, { application } from "express";
 import User from "../models/user.js";
 
 const router = express.Router();
@@ -24,6 +24,25 @@ router.get("/new", (req, res) => {
     res.render("applications/new", { user: req.session.user });
   } catch (error) {
     console.error(error);
+    // TODO create an error template and render
+  }
+});
+
+router.get("/:applicationId", async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    const user = await User.findById(req.session.user._id);
+    const application = user.applications.find((app) => {
+      return app._id.toString() === applicationId;
+    });
+
+    res.render("applications/show", {
+      user: req.session.user,
+      application: application,
+    });
+  } catch (error) {
+    console.error(error);
+    // TODO create an error template and render
   }
 });
 
@@ -49,11 +68,31 @@ router.post("/", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.send("There was an error creating the applicaiton.");
+    // TODO create an error template and render
   }
 });
 
 // PUT
 
 // DELETE
+router.delete("/:applicationId", async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    const user = await User.findById(req.session.user._id);
+    
+    user.applications.forEach((app, index) => {
+      if( app._id.toString() === applicationId ) {
+        user.applications.splice(index, 1);
+      }
+    });
+
+    await user.save();
+
+    res.redirect(`/users/${req.session.user._id}/applications`);
+  } catch (error) {
+    console.error(error);
+    // TODO create an error template and render
+  }
+});
 
 export default router;
